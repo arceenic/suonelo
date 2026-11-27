@@ -14,11 +14,12 @@ env:
   NEXT_TELEMETRY_DISABLED: '1'
   CARGO_INCREMENTAL: '0'
   RUST_TARGET: aarch64-apple-darwin
+  RUSTC_WRAPPER: sccache
 
 jobs:
   build:
     name: Build macOS (arm64)
-    runs-on: macos-latest
+    runs-on: avrea-macos-latest-8-vcpu
     timeout-minutes: 60
     steps:
       - name: Check out build inputs
@@ -72,8 +73,16 @@ jobs:
           rustup toolchain install "$rust_version" --profile minimal --target "$RUST_TARGET"
           printf 'RUSTUP_TOOLCHAIN=%s\n' "$rust_version" >> "$GITHUB_ENV"
 
+      - name: Set up sccache
+        uses: mozilla-actions/sccache-action@fc920bf0ec8de6ee65d409111f7ec508035751ba # v0.0.11
+        with:
+          version: 'v0.18.0'
+
+      - name: Start sccache server
+        run: sccache --start-server
+
       - name: Audit the npm lockfile
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=high --registry=https://registry.npmjs.org
 
       - name: Audit Rust dependencies for this macOS target
         if: ${{ !cancelled() && steps.rust.outcome == 'success' }}
