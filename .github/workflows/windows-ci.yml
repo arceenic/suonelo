@@ -13,11 +13,12 @@ env:
   NEXT_PUBLIC_SUONELO_PLATFORM: win32
   NEXT_TELEMETRY_DISABLED: '1'
   CARGO_INCREMENTAL: '0'
+  RUSTC_WRAPPER: sccache
 
 jobs:
   build:
     name: Build Windows (x64)
-    runs-on: windows-2025
+    runs-on: avrea-windows-latest-8-vcpu
     timeout-minutes: 60
     env:
       WINDOWS_ARCH: x64
@@ -46,6 +47,16 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Rust toolchain installation failed.' }
           "RUSTUP_TOOLCHAIN=$rust" >> $env:GITHUB_ENV
 
+      - name: Set up sccache
+        uses: mozilla-actions/sccache-action@fc920bf0ec8de6ee65d409111f7ec508035751ba # v0.0.11
+        with:
+          version: 'v0.18.0'
+
+      - name: Start sccache server
+        run: |
+          sccache --start-server
+          if ($LASTEXITCODE -ne 0) { throw 'Failed to start sccache server.' }
+
       - name: Check locked frontend dependencies and export the UI
         run: |
           npm ci --no-audit
@@ -61,7 +72,7 @@ jobs:
 
       - name: Report npm advisories
         continue-on-error: true
-        run: npm audit --audit-level=low
+        run: npm audit --audit-level=low --registry=https://registry.npmjs.org
 
       - name: Test and compile the Windows binary
         run: |

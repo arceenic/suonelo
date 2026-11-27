@@ -16,7 +16,7 @@ jobs:
   release:
     needs: [windows, macos-intel, macos-arm, linux]
     if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
-    runs-on: ubuntu-latest
+    runs-on: avrea-ubuntu-latest-8-vcpu
     concurrency: release-${{ github.ref }}
     permissions:
       contents: write

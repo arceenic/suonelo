@@ -14,11 +14,12 @@ env:
   NEXT_TELEMETRY_DISABLED: '1'
   CARGO_INCREMENTAL: '0'
   RUST_TARGET: x86_64-unknown-linux-gnu
+  RUSTC_WRAPPER: sccache
 
 jobs:
   build:
     name: Build Linux (x86-64)
-    runs-on: ubuntu-22.04
+    runs-on: avrea-ubuntu-22.04-8-vcpu-16gb
     timeout-minutes: 60
 
     steps:
@@ -44,6 +45,14 @@ jobs:
           rustup toolchain install "$rust" --profile minimal --target "$RUST_TARGET" --component rustfmt --component clippy
           echo "RUSTUP_TOOLCHAIN=$rust" >> "$GITHUB_ENV"
 
+      - name: Set up sccache
+        uses: mozilla-actions/sccache-action@fc920bf0ec8de6ee65d409111f7ec508035751ba # v0.0.11
+        with:
+          version: 'v0.18.0'
+
+      - name: Start sccache server
+        run: sccache --start-server
+
       - name: Install locked frontend dependencies and export the UI
         run: |
           npm ci --no-audit
@@ -52,7 +61,7 @@ jobs:
           npm run typecheck
 
       - name: Audit npm dependencies
-        run: npm audit --audit-level=high
+        run: npm audit --audit-level=high --registry=https://registry.npmjs.org
 
       - name: Audit Rust dependencies
         run: |
