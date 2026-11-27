@@ -365,7 +365,7 @@ export default function App() {
           <>
             {view !== "Settings" && account.state !== "ready" && (
               <div className="session-notice notice">
-                <span>{accountMessage || account.reason || `${accountLabels[account.state]}. Authenticated actions will wait.`}</span>
+                <span>{accountMessage || account.reason || `${accountLabels[account.state]}. Login to your account to get started.`}</span>
                 {account.state === "unvalidated" ? (
                   <ValidationButton label="Retry validation" validating={validation?.origin === "notice" && validation.processing}
                     disabled={!!validation} onClick={() => void validate(undefined, "notice")} />

@@ -305,7 +305,7 @@ export const CatalogSearch = memo(function CatalogSearch({ open, close, account,
           <Artwork key={searchKey(detail.row.key)} row={detail.row} generation={generation} />
           <div><span className="search-meta">{numbered ? "Release" : "Artist"}</span><h3>{detail.row.title}</h3>
             {detail.row.byline && <p>{detail.row.byline}</p>}
-            {!numbered && <p>{detail.group.count} matching {detail.group.count === 1 ? "release" : "releases"} loaded</p>}
+            {!numbered && <p>{detail.group.count} matching {detail.group.count === 1 ? "release" : "releases"} results found</p>}
             <Quality row={detail.row} />
           </div>
         </div>}

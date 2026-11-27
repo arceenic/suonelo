@@ -160,7 +160,7 @@ function ArtworkMetadata({ settings, patch, metadata }: { settings: Settings; pa
 }
 
 export const accountLabels: Record<Account["state"], string> = {
-  missing: "Account setup needed",
+  missing: "Credentials are missing",
   validating: "Validating credentials",
   unvalidated: "Credentials need validation",
   ready: "Signed in",

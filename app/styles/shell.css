@@ -63,7 +63,7 @@
 
 .speed-host { flex: none; }
 .speed-trigger {
-  min-height: 26px;
+  min-height: 24px;
   padding: 2px 7px;
   border-color: transparent;
   background: transparent;

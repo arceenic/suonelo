@@ -221,6 +221,7 @@ button[data-action=apply-queued] {
   display: grid;
   gap: 3px;
   font-weight: 500;
+  margin-top: 12px;
 }
 
 .switch-copy small {

@@ -174,11 +174,12 @@ input[type=checkbox] {
   vertical-align: middle;
 }
 
+button.with-icon { min-height: 40px; }
+
 button.with-icon, .chipbox button, .topright button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
   gap: 6px;
 }
 
