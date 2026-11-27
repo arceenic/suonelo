@@ -1,0 +1,11 @@
+@layer theme, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@import "./styles/themes.css";
+@import "./styles/base.css";
+@import "./styles/shell.css";
+@import "./styles/library.css";
+@import "./styles/dialogs.css";
+@import "./styles/search.css";
+@import "./styles/settings.css";

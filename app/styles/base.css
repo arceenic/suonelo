@@ -1,0 +1,396 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  font: 400 14px "Space Grotesk Variable", "Segoe UI", system-ui, sans-serif;
+}
+
+h1, h2, h3, p {
+  margin: 0;
+}
+
+h1, h2, h3, strong, button {
+  font-weight: 500;
+}
+
+h1 {
+  font-size: 24px;
+  line-height: 30px;
+  letter-spacing: -.035em;
+  font-weight: 500;
+}
+
+h2 {
+  font-size: 18px;
+  line-height: 24px;
+  letter-spacing: -.02em;
+  font-weight: 500;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 7px 11px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+button:hover {
+  background: var(--hover);
+}
+
+button:disabled {
+  opacity: .45;
+  cursor: default;
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--highlight);
+  outline-offset: 2px;
+}
+
+.primary, .primary:hover {
+  background: var(--accent);
+  color: var(--on);
+  border-color: transparent;
+  font-weight: 500;
+}
+
+.ghost {
+  border-color: transparent;
+  background: transparent;
+}
+
+.danger {
+  color: var(--bad);
+}
+
+.dim {
+  color: var(--dim);
+}
+
+.subtitle {
+  color: var(--dim);
+  margin-top: 5px;
+}
+
+.dim, .subtitle, .release small, .foot, .config > p, .field small {
+  font-weight: 300;
+}
+
+.topright, .actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  overflow: hidden;
+}
+
+.empty {
+  padding: 32px;
+  text-align: center;
+  color: var(--dim);
+}
+
+.notice {
+  padding: 9px 0;
+  color: var(--warn);
+}
+
+.notice.error {
+  color: var(--bad);
+}
+
+.session-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin: 13px 0;
+  font-weight: 500;
+}
+
+.field small {
+  font-weight: 400;
+  color: var(--dim);
+}
+
+input:not([type=checkbox]), select, textarea {
+  width: 100%;
+  border: 1px solid var(--input-line);
+  background: var(--bg);
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-weight: 400;
+}
+
+input[type=checkbox] {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  vertical-align: middle;
+}
+
+button.with-icon, .chipbox button, .topright button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  gap: 6px;
+}
+
+button[data-action=add] kbd {
+  margin-left: 3px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: color-mix(in srgb, currentColor 15%, transparent);
+  font: inherit;
+  font-size: 11px;
+}
+
+.toast {
+  --toast-color: var(--info);
+  position: fixed;
+  bottom: 46px;
+  right: 16px;
+  max-width: min(420px, calc(100% - 32px));
+  padding: 10px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--toast-color);
+  border: 1px solid color-mix(in srgb, var(--toast-color) 50%, var(--line));
+  background: color-mix(in srgb, var(--toast-color) 10%, var(--surface));
+  border-radius: 9px;
+  box-shadow: 0 8px 24px #0002;
+  z-index: 10;
+  overflow-wrap: anywhere;
+}
+
+.toast[data-type=success] { --toast-color: var(--good); }
+.toast[data-type=warning] { --toast-color: var(--warn); }
+.toast[data-type=error] { --toast-color: var(--bad); }
+.toast > .icon { margin-top: 2px; }
+.toast > span { min-width: 0; }
+.toast button { padding: 2px; margin: -2px -4px -2px 0; flex: none; }
+.toast:empty { display: none; }
+
+.mode-picker {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  max-width: 430px;
+  padding: 5px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+}
+
+.mode-picker button {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 7px;
+  min-height: 76px;
+  padding: 8px 4px;
+  background: transparent;
+  border-color: transparent;
+  white-space: normal;
+}
+
+.mode-picker button:hover {
+  background: var(--hover);
+}
+
+.mode-picker button[aria-pressed=true] {
+  background: transparent;
+  color: var(--on);
+}
+
+.mode-picker .icon {
+  width: 25px;
+  height: 25px;
+}
+
+.choice-highlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--accent);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.choice-highlight[data-ready=true] {
+  transition: transform 240ms cubic-bezier(.2, .8, .2, 1), width 240ms ease, height 240ms ease;
+}
+
+.dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: start;
+  background: var(--bg);
+  border-color: var(--input-line);
+}
+
+.dropdown-trigger > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdown-trigger > .icon {
+  flex: none;
+  width: 15px;
+  height: 15px;
+  color: var(--dim);
+}
+
+.dropdown-trigger[data-popup-open] > .icon {
+  rotate: 180deg;
+}
+
+.dropdown-position {
+  z-index: 12;
+}
+
+.dropdown-popup, .search-filter-menu, .connections-popup {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px #0003;
+}
+
+.dropdown-popup {
+  width: min(calc(var(--anchor-width) + var(--dropdown-extra, 0px)), var(--available-width));
+  overflow: hidden;
+}
+
+.dropdown-position[data-wide=true] {
+  --dropdown-extra: 24px;
+}
+
+.dropdown-list {
+  padding: 4px;
+  max-height: min(var(--available-height), 300px);
+  overflow: hidden auto;
+}
+
+.dropdown-list > :not(:first-child) {
+  margin-top: 4px;
+}
+
+.dropdown-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 7px 9px;
+  border-radius: 6px;
+  cursor: default;
+  font-size: 13px;
+}
+
+.dropdown-item .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.dropdown-item:is([data-highlighted], [data-selected]) {
+  background: var(--hover);
+  color: var(--ink);
+}
+
+:is(.dropdown-popup, .search-filter-menu, .connections-popup) {
+  transform-origin: var(--transform-origin);
+  transition: transform 220ms cubic-bezier(.2, .78, .23, 1), opacity 220ms ease;
+}
+
+:is(.dropdown-popup, .search-filter-menu, .connections-popup):is([data-starting-style], [data-ending-style]) {
+  transform: scale(.9);
+  opacity: 0;
+}
+
+button.validation-button {
+  display: inline-grid;
+  place-items: center;
+}
+
+.validation-button > span {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+/* Size the button for both labels before validation starts. */
+.validation-button::before, .validation-button::after {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+.validation-button::before { content: attr(data-label); }
+.validation-button::after { content: "Validating…"; padding-inline-start: 22px; }
+.validation-button svg { width: 16px; height: 16px; flex: none; }
+.validation-spinner { animation: validation-spin 1s linear infinite; }
+@keyframes validation-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .choice-highlight[data-ready=true] { transition: none; }
+  .validation-spinner { animation: none; }
+  :is(.dropdown-popup, .search-filter-menu, .connections-popup) { transition: opacity 120ms ease; }
+  :is(.dropdown-popup, .search-filter-menu, .connections-popup):is([data-starting-style], [data-ending-style]) { transform: none; }
+}

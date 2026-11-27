@@ -1,0 +1,5 @@
+[advisories]
+ignore = [
+  { id = "RUSTSEC-2024-0436", reason = "Lofty 0.25.5 uses paste as a compile-time macro. Remove the exception when Lofty replaces paste." },
+  { id = "RUSTSEC-2024-0370", reason = "GTK 3 uses proc-macro-error through glib-macros as a compile-time dependency. Review when Tauri updates the Linux GTK dependency chain." },
+]

@@ -1,0 +1,118 @@
+/* Color tokens from the shadcn.io theme previews and inline logo mappings. */
+:is(#app, .swatch) {
+  --bg: light-dark(oklch(1 0 0), oklch(0.145 0 0));
+  --surface: light-dark(oklch(1 0 0), oklch(0.205 0 0));
+  --side: light-dark(oklch(0.985 0 0), oklch(0.205 0 0));
+  --ink: light-dark(oklch(0.145 0 0), oklch(0.985 0 0));
+  --dim: light-dark(oklch(0.556 0 0), oklch(0.708 0 0));
+  --line: light-dark(oklch(0.922 0 0), oklch(1 0 0 / 10%));
+  --input-line: light-dark(oklch(0.922 0 0), oklch(1 0 0 / 15%));
+  --hover: light-dark(oklch(0.97 0 0), oklch(0.269 0 0));
+  --accent: light-dark(oklch(0.205 0 0), oklch(0.922 0 0));
+  --on: light-dark(oklch(0.985 0 0), oklch(0.205 0 0));
+  --bad: light-dark(oklch(0.577 0.245 27.325), oklch(0.704 0.191 22.216));
+  --highlight: light-dark(var(--accent), color-mix(in oklab, var(--accent) 45%, var(--ink)));
+  --good: light-dark(#327049, #a2d4a7);
+  --warn: light-dark(#8b581e, #e7b67d);
+  --info: light-dark(#235ca4, #93c5fd);
+  --logo-wordmark: var(--ink);
+  --logo-symbol: var(--ink);
+  --logo-tile: var(--hover);
+}
+
+:is(#app, .swatch)[data-theme="Spotify"] {
+  --accent: light-dark(oklch(0.527 0.154 150.069), oklch(0.448 0.119 151.328));
+  --on: light-dark(oklch(0.982 0.018 155.826), oklch(0.982 0.018 155.826));
+  --logo-wordmark: light-dark(#008236, #3F9259);
+  --logo-symbol: var(--on);
+  --logo-tile: var(--accent);
+}
+
+:is(#app, .swatch)[data-theme="Material Design"] {
+  --bg: light-dark(oklch(1 0 0), oklch(0.145 0.008 326));
+  --surface: light-dark(oklch(1 0 0), oklch(0.212 0.019 322.12));
+  --side: light-dark(oklch(0.985 0 0), oklch(0.212 0.019 322.12));
+  --ink: light-dark(oklch(0.145 0.008 326), oklch(0.985 0 0));
+  --dim: light-dark(oklch(0.542 0.034 322.5), oklch(0.711 0.019 323.02));
+  --line: light-dark(oklch(0.922 0.005 325.62), oklch(1 0 0 / 10%));
+  --input-line: light-dark(oklch(0.922 0.005 325.62), oklch(1 0 0 / 15%));
+  --hover: light-dark(oklch(0.96 0.003 325.6), oklch(0.263 0.024 320.12));
+  --accent: light-dark(oklch(0.457 0.24 277.023), oklch(0.398 0.195 277.366));
+  --on: light-dark(oklch(0.962 0.018 272.314), oklch(0.962 0.018 272.314));
+  --logo-wordmark: light-dark(#432DD7, #6E74F9);
+  --logo-symbol: var(--on);
+  --logo-tile: var(--accent);
+}
+
+:is(#app, .swatch)[data-theme="Claymorphism"] {
+  --accent: light-dark(oklch(0.553 0.195 38.402), oklch(0.47 0.157 37.304));
+  --on: light-dark(oklch(0.98 0.016 73.684), oklch(0.98 0.016 73.684));
+  --logo-wordmark: light-dark(#CA3500, #D35D3A);
+  --logo-symbol: var(--on);
+  --logo-tile: var(--accent);
+}
+
+:is(#app, .swatch)[data-theme="Violet"] {
+  --accent: light-dark(oklch(0.491 0.27 292.581), oklch(0.432 0.232 292.759));
+  --on: light-dark(oklch(0.969 0.016 293.756), oklch(0.969 0.016 293.756));
+  --logo-wordmark: light-dark(#7008E7, #9461FF);
+  --logo-symbol: var(--on);
+  --logo-tile: var(--accent);
+}
+
+:is(#app, .swatch)[data-theme="Suonelo"] {
+  --bg: light-dark(#F5F2E9, #252C28);
+  --surface: light-dark(#FFFDF7, #303A33);
+  --side: light-dark(#ECEEE2, #29322C);
+  --ink: light-dark(#252C28, #F5F2E9);
+  --dim: light-dark(#566451, #BDC8B7);
+  --line: light-dark(#D5D9CB, #4B584D);
+  --input-line: light-dark(#748772, #83957D);
+  --hover: light-dark(#E6EBD9, #3B473D);
+  --accent: #B5CB8D;
+  --on: #252C28;
+  --bad: light-dark(#A33730, #FFB4A9);
+  --highlight: light-dark(#526447, #C5DCA6);
+  --good: light-dark(#365F3C, #B5CB8D);
+  --warn: light-dark(#80501F, #EDBE83);
+  --info: light-dark(#345E7A, #A9CFE5);
+  --logo-symbol: #252C28;
+  --logo-tile: #B5CB8D;
+}
+
+/* Strong outlines remain visible against light backgrounds and Pear fills. */
+#app[data-theme="Suonelo"] :is(button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--highlight);
+  outline-offset: 2px;
+}
+
+/* Pear alone has insufficient contrast as an input/toggle boundary on Cream. */
+#app[data-theme="Suonelo"] .primary {
+  border: 1px solid var(--highlight);
+}
+
+#app[data-theme="Suonelo"] .primary:hover {
+  filter: brightness(.96);
+}
+
+#app[data-theme="Suonelo"] :is(.theme[aria-pressed=true], .mode-picker button[aria-pressed=true], .switch-control input:checked + .switch-track) {
+  border-color: var(--highlight);
+}
+
+#app[data-theme="Suonelo"] .quality-options [aria-checked=true] {
+  border-color: var(--highlight);
+  font-weight: 600;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 220ms;
+  animation-timing-function: ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
