@@ -18,7 +18,7 @@ function SpeedTrigger({
   const bytesPerSecond = useSyncExternalStore(subscribeSpeed, getSpeed, getSpeed);
   const formatted = (bytesPerSecond / 1_000_000).toFixed(2);
   return (
-    <Popover.Trigger id="transfer-speed" ref={triggerRef} className="speed-trigger with-icon" disabled={disabled}
+    <Popover.Trigger id="transfer-speed" ref={triggerRef} className="speed-trigger" disabled={disabled}
       aria-label={`Aggregate network download speed, ${formatted} MB/s. Max connections`}>
       <CircleGauge className="icon" aria-hidden /> {formatted} MB/s
     </Popover.Trigger>
