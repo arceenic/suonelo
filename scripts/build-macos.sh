@@ -1,18 +1,84 @@
 #!/usr/bin/env bash
-# Build a thin macOS app for the native host architecture.
+# Build a thin macOS app for the host architecture or a requested --cpu target.
 set -euo pipefail
 
 fail() { printf 'suonelo: %s\n' "$*" >&2; exit 1; }
-usage() { printf 'Usage: %s [--check | --app | --smoke-mounted APP]\n' "${0##*/}"; }
-if [[ "${1:-}" == --smoke-mounted ]]; then
-  [[ $# -eq 2 ]] || { usage >&2; exit 2; }
-  [[ "$(uname -s)" == Darwin ]] || fail 'Run the smoke check on macOS.'
-  bundle="$2"
+usage() {
+  printf 'Usage: %s [--cpu amd64|arm64] [--check | --app | --smoke-mounted APP]\n' "${0##*/}"
+}
+
+mode=""
+cpu_override=""
+smoke_bundle=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --cpu)
+      [[ -z "$cpu_override" && $# -ge 2 ]] || { usage >&2; exit 2; }
+      cpu_override="$2"
+      shift 2
+      ;;
+    --cpu=*)
+      [[ -z "$cpu_override" ]] || { usage >&2; exit 2; }
+      cpu_override="${1#--cpu=}"
+      shift
+      ;;
+    --check|--app)
+      [[ -z "$mode" ]] || { usage >&2; exit 2; }
+      mode="$1"
+      shift
+      ;;
+    --smoke-mounted)
+      [[ -z "$mode" && $# -ge 2 && -n "$2" ]] || { usage >&2; exit 2; }
+      mode=--smoke-mounted
+      smoke_bundle="$2"
+      shift 2
+      ;;
+    *)
+      usage >&2
+      exit 2
+      ;;
+  esac
+done
+mode="${mode:---check}"
+
+arch=""
+if [[ -n "$cpu_override" ]]; then
+  case "$cpu_override" in
+    amd64) arch=x86_64 ;;
+    arm64) arch=arm64 ;;
+    *) usage >&2; exit 2 ;;
+  esac
+fi
+
+[[ "$(uname -s)" == Darwin ]] || fail 'Run in a native macOS shell.'
+[[ "$(sysctl -in sysctl.proc_translated 2>/dev/null || true)" != 1 ]] ||
+  fail 'Open a native terminal session outside Rosetta.'
+host_arch="$(uname -m)"
+case "$host_arch" in
+  arm64) host_target=aarch64-apple-darwin; host_node_arch=arm64 ;;
+  x86_64) host_target=x86_64-apple-darwin; host_node_arch=x64 ;;
+  *) fail "Unsupported macOS host architecture: $host_arch" ;;
+esac
+arch="${arch:-$host_arch}"
+case "$arch" in
+  arm64) target=aarch64-apple-darwin ;;
+  x86_64) target=x86_64-apple-darwin ;;
+esac
+
+if [[ "$mode" == --smoke-mounted ]]; then
+  if [[ "$arch" == arm64 && "$host_arch" != arm64 ]]; then
+    fail "Cannot run an arm64 app smoke check on an $host_arch host."
+  fi
+  bundle="$smoke_bundle"
   plist="$bundle/Contents/Info.plist"
   binary="$bundle/Contents/MacOS/$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$plist")"
   test -x "$binary"
   codesign --verify --deep --strict "$bundle"
-  test "$(lipo -archs "$binary")" = x86_64
+  test "$(lipo -archs "$binary")" = "$arch"
   libraries=$(otool -L "$binary")
   printf '%s\n' "$libraries"
   # Require system-provided dynamic libraries. Codec code is linked into the executable.
@@ -48,7 +114,7 @@ SWIFT
   (
     PATH=/usr/bin:/bin:/usr/sbin:/sbin /usr/bin/sandbox-exec \
       -p '(version 1) (allow default) (deny network* (remote ip "*:*"))' \
-      /usr/bin/arch -x86_64 "$binary" "--qa-profile=$profile" > "$smoke/app.log" 2>&1 &
+      /usr/bin/arch "-$arch" "$binary" "--qa-profile=$profile" > "$smoke/app.log" 2>&1 &
     app_pid=$!
     trap 'kill "$app_pid" 2>/dev/null || true; wait "$app_pid" 2>/dev/null || true' EXIT
     if ! "$smoke/check-window" "$app_pid" ||
@@ -61,24 +127,7 @@ SWIFT
   exit 0
 fi
 
-mode="${1:---check}"
-[[ $# -le 1 ]] || { usage >&2; exit 2; }
-case "$mode" in
-  --help|-h) usage; exit 0 ;;
-  --check|--app) ;;
-  *) usage >&2; exit 2 ;;
-esac
-
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.."
-[[ "$(uname -s)" == Darwin ]] || fail 'Run in a native macOS shell.'
-[[ "$(sysctl -in sysctl.proc_translated 2>/dev/null || true)" != 1 ]] ||
-  fail 'Open a native terminal session outside Rosetta.'
-arch="$(uname -m)"
-case "$arch" in
-  arm64) target=aarch64-apple-darwin; node_arch=arm64 ;;
-  x86_64) target=x86_64-apple-darwin; node_arch=x64 ;;
-  *) fail "Unsupported macOS architecture: $arch" ;;
-esac
 for tool in node npm rustc cargo rustup xcode-select xcrun file lipo otool codesign shasum; do
   command -v "$tool" >/dev/null || fail "Missing tool: $tool"
 done
@@ -87,11 +136,11 @@ sdk="$(xcrun --sdk macosx --show-sdk-path)"
 [[ -d "$sdk" ]] || fail 'The selected Xcode tools have no macOS SDK.'
 xcrun --sdk macosx --find clang >/dev/null
 
-[[ "$(rustc -vV | awk '/^host: /{print $2}')" == "$target" ]] ||
-  fail "Rust must run with host $target."
+[[ "$(rustc -vV | awk '/^host: /{print $2}')" == "$host_target" ]] ||
+  fail "Rust must run with host $host_target."
 rustup target list --installed | grep -Fx "$target" >/dev/null ||
   fail "Install $target with rustup."
-node - "$node_arch" <<'NODE'
+node - "$host_node_arch" <<'NODE'
 const fs = require("node:fs");
 const expectedArch = process.argv[2];
 const app = require("./package.json");
@@ -137,7 +186,12 @@ if [[ "$mode" == --app ]]; then
 else
   npm run build -- --webpack
 fi
-cargo test --locked --target "$target" --manifest-path src-tauri/Cargo.toml
+if [[ "$arch" == "$host_arch" ]]; then
+  cargo test --locked --target "$target" --manifest-path src-tauri/Cargo.toml
+else
+  printf 'suonelo: cross-compiling %s on %s; compiling tests without executing.\n' "$target" "$host_arch"
+  cargo test --no-run --locked --target "$target" --manifest-path src-tauri/Cargo.toml
+fi
 if [[ "$mode" == --check ]]; then exit 0; fi
 
 bundle="$CARGO_TARGET_DIR/$target/release/bundle/macos/suonelo.app"

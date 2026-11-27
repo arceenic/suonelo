@@ -6,6 +6,7 @@ The Intel CI workflow verifies the app, privacy scan and unsigned DMG.
 import os
 from pathlib import Path
 import subprocess
+import sys
 
 root = Path(__file__).resolve().parent.parent
 home = Path.home()
@@ -21,4 +22,4 @@ env["CARGO_ENCODED_RUSTFLAGS"] = "\x1f".join(flags)
 env["CFLAGS"] = "-ffile-prefix-map=" + str(home) + "=/build/home"
 env["CXXFLAGS"] = env["CFLAGS"]
 env["NEXT_TELEMETRY_DISABLED"] = "1"
-subprocess.run(["bash", "scripts/build-macos.sh", "--app"], cwd=root, env=env, check=True)
+subprocess.run(["bash", "scripts/build-macos.sh", "--app", *sys.argv[1:]], cwd=root, env=env, check=True)

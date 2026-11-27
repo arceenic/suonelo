@@ -86,7 +86,7 @@ jobs:
             --locked --target "$RUST_TARGET" check advisories
 
       - name: Test and bundle the native app
-        run: python3 scripts/build-macos-stable.py
+        run: python3 scripts/build-macos-stable.py --cpu amd64
 
       - name: Verify lockfiles stayed unchanged
         run: git diff --exit-code HEAD -- package-lock.json src-tauri/Cargo.lock
@@ -133,7 +133,7 @@ jobs:
           LOGNAME=ci python3 scripts/scan-macos-release-privacy.py "$mounted_app"
           LOGNAME=ci python3 scripts/scan-macos-release-privacy.py "$mount/Notices"
 
-          bash scripts/build-macos.sh --smoke-mounted "$mounted_app"
+          bash scripts/build-macos.sh --cpu amd64 --smoke-mounted "$mounted_app"
 
           printf 'artifact=%s\n' "$artifact" >> "$GITHUB_OUTPUT"
 
@@ -142,13 +142,13 @@ jobs:
         env:
           DMG_NAME: ${{ steps.package.outputs.artifact }}.dmg
         run: |
-          shasum -a 256 "$DMG_NAME" > SHA256SUMS.txt
-          shasum -a 256 -c SHA256SUMS.txt
+          shasum -a 256 "$DMG_NAME" > "$DMG_NAME.sha256"
+          shasum -a 256 -c "$DMG_NAME.sha256"
 
       - name: Upload the verified DMG and checksum
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: mac-package
+          name: mac-intel-package
           path: ${{ runner.temp }}/suonelo-release/
           if-no-files-found: error
           compression-level: 0

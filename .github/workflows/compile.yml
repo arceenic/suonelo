@@ -7,12 +7,14 @@ permissions:
 jobs:
   windows:
     uses: ./.github/workflows/windows-ci.yml
-  macos:
+  macos-intel:
     uses: ./.github/workflows/macos-intel.yml
+  macos-arm:
+    uses: ./.github/workflows/macos-arm.yml
   linux:
     uses: ./.github/workflows/linux-ci.yml
   release:
-    needs: [windows, macos, linux]
+    needs: [windows, macos-intel, macos-arm, linux]
     if: github.ref_type == 'tag' && startsWith(github.ref_name, 'v')
     runs-on: ubuntu-latest
     concurrency: release-${{ github.ref }}
@@ -23,7 +25,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           persist-credentials: false
       - name: Check release version
@@ -39,24 +41,27 @@ jobs:
         run: |
           set -euo pipefail
           gh run download "$GITHUB_RUN_ID" -n windows-package -D packages
-          gh run download "$GITHUB_RUN_ID" -n mac-package -D packages
+          gh run download "$GITHUB_RUN_ID" -n mac-intel-package -D packages
+          gh run download "$GITHUB_RUN_ID" -n mac-arm64-package -D packages
           gh run download "$GITHUB_RUN_ID" -n linux-package -D packages
           cd packages
           version=${GITHUB_REF_NAME#v}
           zip="suonelo-$version-windows-x64.zip"
-          dmg="suonelo-$version-macos-x86_64.dmg"
+          dmg_intel="suonelo-$version-macos-x86_64.dmg"
+          dmg_arm64="suonelo-$version-macos-arm64.dmg"
           deb="suonelo-$version-linux-x86_64.deb"
           sha256sum -c "$zip.sha256"
-          sha256sum -c SHA256SUMS.txt
+          sha256sum -c "$dmg_intel.sha256"
+          sha256sum -c "$dmg_arm64.sha256"
           sha256sum -c "$deb.sha256"
-          sha256sum "$zip" "$dmg" "$deb" > SHA256SUMS.txt
+          sha256sum "$zip" "$dmg_intel" "$dmg_arm64" "$deb" > SHA256SUMS.txt
           title="suonelo $GITHUB_REF_NAME"
-          notes="Windows x64 portable ZIP, unsigned macOS Intel DMG, and Linux x86-64 Debian package. Apple silicon requires Rosetta for this DMG. SHA256SUMS.txt covers all three downloads."
+          notes="Windows x64 portable ZIP, unsigned macOS Apple Silicon (arm64) and Intel (x86_64) DMGs, and Linux x86-64 Debian package. SHA256SUMS.txt covers all four downloads."
           # A newer tag push can supersede a running build.
           test "$(gh api "repos/$GH_REPO/commits/$GITHUB_REF_NAME" --jq .sha)" = "$(git rev-parse HEAD)"
           if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            gh release upload "$GITHUB_REF_NAME" "$zip" "$dmg" "$deb" SHA256SUMS.txt --clobber
+            gh release upload "$GITHUB_REF_NAME" "$zip" "$dmg_intel" "$dmg_arm64" "$deb" SHA256SUMS.txt --clobber
             gh release edit "$GITHUB_REF_NAME" --title "$title" --notes "$notes"
           else
-            gh release create "$GITHUB_REF_NAME" "$zip" "$dmg" "$deb" SHA256SUMS.txt --verify-tag --title "$title" --notes "$notes"
+            gh release create "$GITHUB_REF_NAME" "$zip" "$dmg_intel" "$dmg_arm64" "$deb" SHA256SUMS.txt --verify-tag --title "$title" --notes "$notes"
           fi
