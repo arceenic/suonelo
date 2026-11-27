@@ -62,10 +62,6 @@ These are practical starting points for running the app. RAM, free space, and do
 | **Free storage** | 1 GB | 10 GB or more for your music |
 | **Download speed** | Around 5 Mbps | 25 Mbps or faster for hi-res batches |
 
-The Intel Mac package needs Rosetta on Apple silicon. For a native ARM64 Mac build, follow the steps below. Windows needs the WebView2 Evergreen Runtime. [Download WebView2](https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section)
-
-The Linux package passed clean installations and desktop launches on Ubuntu 22.04 and Debian 13.8. On Debian 13.8, GNOME Shell 48 and KDE Plasma 6.3 passed AppImage UI smoke tests on X11 with GNOME Keyring. Plasma 6.3 on Wayland also passed AppImage launch, typing in **Add links**, and folder selection through the KDE portal. Synthetic sign-in and account restoration passed with both GNOME Keyring and KWallet in the tested sessions. [Linux verification](docs/linux-verification.md)
-
 On Linux, install the x86-64 `.deb` from GitHub Releases with `sudo apt install ./suonelo-1.0.##-linux-x86_64.deb`. The package declares the desktop runtime dependencies and recommends GNOME Keyring. Other Secret Service providers can work with an encrypted session and a persistent default collection. If access is interrupted, unlock or start the keyring and choose **Retry keyring access**.
 
 Linux stores the profile in `$XDG_DATA_HOME/com.suonelo.desktop`, normally `~/.local/share/com.suonelo.desktop`. A persistent Secret Service collection holds the credentials for that profile. Launch with `--qa-profile=NAME` to use a separate profile and keyring item. Existing experimental Linux data beside a previously built executable stays in its original location. Package removal leaves the profile and keyring item available for reinstall.
