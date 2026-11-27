@@ -22,9 +22,13 @@
 ### Compatibility
 
 - [linux] Credential storage needs a persistent default collection in GNOME Keyring or a compatible Secret Service provider. The Debian package is the initial distribution format.
-- [linux] The local Ubuntu 22.04 WSL test suite covers credential records, profile isolation, and the credential lifecycle against a private GNOME Keyring. See [Linux verification](linux-verification.md) for desktop and live-account checks.
+- [linux] The local Ubuntu 22.04 WSL test suite covers credential records, profile isolation, and the credential lifecycle against a private GNOME Keyring.
 
-Validation: `npm run typecheck`, `npm run build`, `cargo check --locked --all-targets`, `cargo build --locked`, and 138 Rust unit tests (`--skip profile_migration`) passed on Windows x64; the 4 `profile_migration` tests (Windows sandbox access error) and `scripts/check-ux.windows.mjs` (sandbox loopback restriction) did not complete inside the sandbox.
+### Note
+
+- These are unsigned binaries, your system may try to block it from executing. When prompted on Windows, click **Run Anyway**. On macOS go to Settings > Privacy & Security then scroll down to find **suonelo** and click **Open anyway**.
+- There is a known issue with Windows wherein RTSS may cause webview2 to crash, as a workaround open up RTSS profile editor, add the executable file and set the app detection level to *None*.
+- Each release will come with corresponding packages for Windows, macOS and Linux builds. Cross-check with SHA256SUMS.txt to verify your downloads.
 
 ## [1.0.10] - 2026-11-20
 
