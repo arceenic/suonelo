@@ -348,7 +348,7 @@ export const CatalogSearch = memo(function CatalogSearch({ open, close, account,
     </div>
     <footer className="search-footer">
       <span className="search-status" aria-live="polite">
-        {search.chosen.length ? `${search.chosen.length} selected` : group ? `${group.count} loaded` : "Select items to continue"}
+        {search.chosen.length ? `${search.chosen.length} selected` : group ? `${group.count} results found` : "Select items to continue"}
       </span>
       <div className="search-footer-actions">
         <Button className="with-icon" disabled={!canSubmit} onClick={() => void search.submit("bookmarks")}><Bookmark className="icon" /> Add to Bookmarks</Button>
