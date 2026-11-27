@@ -6,7 +6,7 @@
 
 Suonelo is a desktop app for browsing Qobuz and saving music to your computer. Search for an album, set a few releases aside for later, or queue a whole list of links at once. Connect your Qobuz account to get started. Full-track downloads require an eligible account.
 
-[GitHub Releases](https://github.com/chm0d-xyz/suonelo/releases) · [Changelog](docs/CHANGELOG.md) · [Build from source](#build-from-source)
+[GitHub Releases](https://github.com/arceenic/suonelo/releases) · [Changelog](docs/CHANGELOG.md) · [Build from source](#build-from-source)
 
 ## What you can do
 
@@ -66,7 +66,7 @@ The Intel Mac package needs Rosetta on Apple silicon. For a native ARM64 Mac bui
 
 The Linux package passed clean installations and desktop launches on Ubuntu 22.04 and Debian 13.8. On Debian 13.8, GNOME Shell 48 and KDE Plasma 6.3 passed AppImage UI smoke tests on X11 with GNOME Keyring. Plasma 6.3 on Wayland also passed AppImage launch, typing in **Add links**, and folder selection through the KDE portal. Synthetic sign-in and account restoration passed with both GNOME Keyring and KWallet in the tested sessions. [Linux verification](docs/linux-verification.md)
 
-On Linux, install the x86-64 `.deb` from GitHub Releases with `sudo apt install ./suonelo-1.0.11-linux-x86_64.deb`. The package declares the desktop runtime dependencies and recommends GNOME Keyring. Other Secret Service providers can work with an encrypted session and a persistent default collection. If access is interrupted, unlock or start the keyring and choose **Retry keyring access**.
+On Linux, install the x86-64 `.deb` from GitHub Releases with `sudo apt install ./suonelo-1.0.##-linux-x86_64.deb`. The package declares the desktop runtime dependencies and recommends GNOME Keyring. Other Secret Service providers can work with an encrypted session and a persistent default collection. If access is interrupted, unlock or start the keyring and choose **Retry keyring access**.
 
 Linux stores the profile in `$XDG_DATA_HOME/com.suonelo.desktop`, normally `~/.local/share/com.suonelo.desktop`. A persistent Secret Service collection holds the credentials for that profile. Launch with `--qa-profile=NAME` to use a separate profile and keyring item. Existing experimental Linux data beside a previously built executable stays in its original location. Package removal leaves the profile and keyring item available for reinstall.
 
@@ -75,7 +75,7 @@ Linux stores the profile in `$XDG_DATA_HOME/com.suonelo.desktop`, normally `~/.l
 Install Git, Node.js 20.9 or later (CI uses Node.js 24), and Rust 1.99.1 via `rustup`. Clone the repo and run the commands for your platform from its root. [Tauri setup guide](https://v2.tauri.app/start/prerequisites/)
 
 ```sh
-git clone https://github.com/chm0d-xyz/suonelo.git
+git clone https://github.com/arceenic/suonelo.git
 cd suonelo
 ```
 
@@ -121,13 +121,13 @@ sudo apt install build-essential libwebkit2gtk-4.1-dev libxdo-dev \
 bash scripts/build-linux.sh
 ```
 
-Find the `.deb`, executable `.AppImage`, and `SHA256SUMS.txt` in `suonelo-1.0.11-linux-x86_64/` at the project root. Rebuilding the same version creates a numbered folder alongside it. [Linux verification](docs/linux-verification.md)
+Find the `.deb`, executable `.AppImage`, and `SHA256SUMS.txt` in `suonelo-1.0.##-linux-x86_64/` at the project root. Rebuilding the same version creates a numbered folder alongside it. [Linux verification](docs/linux-verification.md)
 
 ## Back up the source
 
 Run `python scripts/backup-source.py` with Python 3.10 or later on Linux, macOS, or Windows. The script saves a timestamped `.tar.gz` and SHA-256 checksum under `.agent-backups/`. It includes source, lockfiles, assets, and non-planning documentation. It checks the archive by restoring it to a temporary directory and comparing file hashes. Use `--include-plans` for a full pre-edit snapshot or `--exclude 'path/*'` to omit additional files. Use `--project` and `--output` to select another project or destination.
 
-[License and credits](docs/docs/README.md#changelogs-and-notices) · [Asset notices](docs/docs/ASSET-NOTICES.md)
+[License and credits](docs/docs/README.md#changelogs-and-notices)
 
 ## Disclaimer
 
