@@ -117,13 +117,12 @@ sudo apt install build-essential libwebkit2gtk-4.1-dev libxdo-dev \
 bash scripts/build-linux.sh
 ```
 
-Find the `.deb`, executable `.AppImage`, and `SHA256SUMS.txt` in `suonelo-1.0.##-linux-x86_64/` at the project root. Rebuilding the same version creates a numbered folder alongside it. [Linux verification](docs/linux-verification.md)
+Find the `.deb`, executable `.AppImage`, and `SHA256SUMS.txt` in `suonelo-1.0.##-linux-x86_64/` at the project root. Rebuilding the same version creates a numbered folder alongside it.
 
-## Back up the source
+## Backup the source
 
 Run `python scripts/backup-source.py` with Python 3.10 or later on Linux, macOS, or Windows. The script saves a timestamped `.tar.gz` and SHA-256 checksum under `.agent-backups/`. It includes source, lockfiles, assets, and non-planning documentation. It checks the archive by restoring it to a temporary directory and comparing file hashes. Use `--include-plans` for a full pre-edit snapshot or `--exclude 'path/*'` to omit additional files. Use `--project` and `--output` to select another project or destination.
 
-[License and credits](docs/docs/README.md#changelogs-and-notices)
 
 ## Disclaimer
 
